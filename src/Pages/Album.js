@@ -11,7 +11,6 @@ class Album extends React.Component {
     colectionName: '',
     artistName: '',
     loading: false,
-    loadingFav: false,
     favoriteList: [],
   }
 
@@ -46,25 +45,23 @@ class Album extends React.Component {
   }
 
   returnSong = async () => {
-    this.setState({ loadingFav: true });
+    this.setState({ loading: true });
     const favoriteList = await getFavoriteSongs();
-    this.setState({ favoriteList, loadingFav: false });
+    this.setState({ favoriteList, loading: false });
   }
 
   isFavorite = (musicparam) => {
     const { favoriteList } = this.state;
-    // console.log(favoriteList);
     return favoriteList.some((music) => music.trackId === musicparam.trackId);
   }
 
   render() {
-    const { musicArray, colectionName, artistName, loading, loadingFav } = this.state;
+    const { musicArray, colectionName, artistName, loading } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
         <h3 data-testid="artist-name">{artistName}</h3>
         <h4 data-testid="album-name">{colectionName}</h4>
-        { loadingFav && <Loading /> }
         { loading && <Loading /> }
         <section>
           MusicCard

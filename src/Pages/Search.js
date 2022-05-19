@@ -34,27 +34,6 @@ class Search extends React.Component {
     return (
       <div data-testid="page-search">
         <Header />
-        { loading && <Loading /> }
-        { apiResponse.length > 0 ? (<div>
-          <p>{`Resultado de álbuns de: ${saveName}`}</p>
-          {apiResponse.map((album) => (
-            <div key={ album.collectionId }>
-              <p>{album.artistId}</p>
-              <p>{album.artistName}</p>
-              <p>{album.collectionId}</p>
-              <p>{album.collectionName}</p>
-              <p>{album.collectionPrice}</p>
-              <Link
-                data-testid={ `link-to-album-${album.collectionId}` }
-                to={ `/album/${album.collectionId}` }
-              >
-                Album
-              </Link>
-              <img src={ album.artworkUrl100 } alt={ album.artistName } />
-              <p>{album.trackCount}</p>
-            </div>
-          ))}
-        </div>) : (<p>Nenhum álbum foi encontrado</p>)}
         <form>
           <label htmlFor="bandName">
             Nome:
@@ -75,6 +54,28 @@ class Search extends React.Component {
             Pesquisar
           </button>
         </form>
+        { loading && <Loading /> }
+        { apiResponse.length > 0 ? (
+          <div>
+            <p>{`Resultado de álbuns de: ${saveName}`}</p>
+            {apiResponse.map((album) => (
+              <div key={ album.collectionId }>
+                <p>{album.artistId}</p>
+                <p>{album.artistName}</p>
+                <p>{album.collectionId}</p>
+                <p>{album.collectionName}</p>
+                <p>{album.collectionPrice}</p>
+                <Link
+                  data-testid={ `link-to-album-${album.collectionId}` }
+                  to={ `/album/${album.collectionId}` }
+                >
+                  Album
+                </Link>
+                <img src={ album.artworkUrl100 } alt={ album.artistName } />
+                <p>{album.trackCount}</p>
+              </div>
+            ))}
+          </div>) : (<p>Nenhum álbum foi encontrado</p>)}
       </div>);
   }
 }

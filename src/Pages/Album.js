@@ -2,7 +2,7 @@ import propTypes from 'prop-types';
 import React from 'react';
 import Header from '../Components/Header';
 import Loading from '../Components/Loading';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 import getMusics from '../services/musicsAPI';
 
 class Album extends React.Component {
@@ -11,10 +11,13 @@ class Album extends React.Component {
     colectionName: '',
     artistName: '',
     loading: false,
+    loadingFav: false,
+    favoriteList: [],
   }
 
   componentDidMount() {
     this.fetchMusics();
+    this.returnSong();
   }
 
   fetchMusics = async () => {
@@ -33,21 +36,36 @@ class Album extends React.Component {
 
   getTarget = async (event) => {
     const favSong = event.target;
-    const { musicArray } = this.state;
+    const { musicArray, favoriteList } = this.state;
     this.setState({ loading: true });
     const getSong = musicArray.filter((elemt) => (elemt.trackName === favSong.name));
-    await addSong(getSong);
+    favoriteList.push(getSong[0]);
+    console.log(getSong[0]);
+    await addSong(getSong[0]);
     this.setState({ loading: false });
   }
 
+  returnSong = async () => {
+    this.setState({ loadingFav: true });
+    const favoriteList = await getFavoriteSongs();
+    this.setState({ favoriteList, loadingFav: false });
+  }
+
+  isFavorite = (musicparam) => {
+    const { favoriteList } = this.state;
+    // console.log(favoriteList);
+    return favoriteList.some((music) => music.trackId === musicparam.trackId);
+  }
+
   render() {
-    const { musicArray, colectionName, artistName, loading } = this.state;
+    const { musicArray, colectionName, artistName, loading, loadingFav } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
-        { loading && <Loading /> }
         <h3 data-testid="artist-name">{artistName}</h3>
         <h4 data-testid="album-name">{colectionName}</h4>
+        { loadingFav && <Loading /> }
+        { loading && <Loading /> }
         <section>
           MusicCard
           { musicArray.filter((item) => item.trackId).map((item) => (
@@ -58,6 +76,7 @@ class Album extends React.Component {
                 <input
                   id={ item.trackId }
                   type="checkbox"
+                  checked={ this.isFavorite(item) }
                   data-testid={ `checkbox-music-${item.trackId}` }
                   onChange={ this.getTarget }
                   name={ item.trackName }

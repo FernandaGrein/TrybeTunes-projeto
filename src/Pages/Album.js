@@ -2,7 +2,7 @@ import propTypes from 'prop-types';
 import React from 'react';
 import Header from '../Components/Header';
 import Loading from '../Components/Loading';
-import { addSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 import getMusics from '../services/musicsAPI';
 
 class Album extends React.Component {
@@ -35,13 +35,38 @@ class Album extends React.Component {
 
   getTarget = async (event) => {
     const favSong = event.target;
+    const { favoriteList } = this.state;
+
+    const isCheked = favoriteList.some((music) => (music.trackName === favSong.name));
+
+    if (isCheked) {
+      this.removeFromFavorites(favSong.name);
+    } else {
+      this.saveOnFavorites(favSong.name);
+    }
+  }
+
+  saveOnFavorites = async (songName) => {
+    // console.log('na função de salvar', songName);
     const { musicArray, favoriteList } = this.state;
     this.setState({ loading: true });
-    const getSong = musicArray.filter((elemt) => (elemt.trackName === favSong.name));
+    const getSong = musicArray.filter((elemt) => (elemt.trackName === songName));
     favoriteList.push(getSong[0]);
-    console.log(getSong[0]);
+    // console.log(getSong[0]);
     await addSong(getSong[0]);
     this.setState({ loading: false });
+    // console.log(favoriteList);
+  }
+
+  removeFromFavorites = async (songName) => {
+    const { favoriteList } = this.state;
+    // console.log('na função de remover', songName);
+    const musicToRemove = favoriteList.filter((elemt) => (elemt.trackName === songName));
+    this.setState({ loading: true });
+    await removeSong(musicToRemove[0]);
+    console.log(favoriteList);
+    const newList = favoriteList.filter((item) => (item.trackName !== songName));
+    this.setState({ favoriteList: newList, loading: false });
   }
 
   returnSong = async () => {

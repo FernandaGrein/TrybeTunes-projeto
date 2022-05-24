@@ -32,7 +32,6 @@ class Login extends React.Component {
     return (
       loading ? <Loading /> : (
         <div data-testid="page-login">
-          <p>login Component</p>
           <label htmlFor="name">
             Nome:
             <input

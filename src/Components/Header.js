@@ -16,7 +16,7 @@ class Header extends React.Component {
     getUserName = async () => {
       this.setState({ load: true });
       const fetch = await getUser();
-      this.setState({ username: fetch.name, load: false });
+      this.setState({ username: fetch.name.userName, load: false });
     }
 
     render() {

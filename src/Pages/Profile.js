@@ -7,10 +7,10 @@ import { getUser } from '../services/userAPI';
 class Profile extends React.Component {
   state = {
     loading: false,
-    userName: '',
-    userEmail: '',
-    userImage: '',
-    userDescription: '',
+    name: '',
+    email: '',
+    image: '',
+    description: '',
   }
 
   componentDidMount() {
@@ -19,21 +19,21 @@ class Profile extends React.Component {
 
   getUser = async () => {
     this.setState({ loading: true });
-    const userData = Object.values(await getUser());
-    // console.log(Object.values(userData));
+    const userData = await getUser();
+    // console.log(userData);
     this.setState({
-      userName: userData[0].userName,
-      userEmail: userData[1].userEmail,
-      userDescription: userData[3].userDescription,
-      userImage: userData[2].userImage,
+      name: userData.name,
+      email: userData.email,
+      description: userData.description,
+      image: userData.image,
       loading: false });
   }
 
   render() {
-    const { userName,
-      userEmail,
-      userImage,
-      userDescription,
+    const { name,
+      email,
+      image,
+      description,
       loading } = this.state;
     return (
       <div data-testid="page-profile">
@@ -41,13 +41,13 @@ class Profile extends React.Component {
         { loading && <Loading /> }
         <section>
           User Profile
-          <h3>{ userName }</h3>
-          <h5>{ userEmail }</h5>
-          <p>{ userDescription }</p>
+          <h3>{ name }</h3>
+          <h5>{ email }</h5>
+          <p>{ description }</p>
           <img
             data-testid="profile-image"
-            src={ userImage }
-            alt={ userName }
+            src={ image }
+            alt={ name }
           />
           <Link to="/profile/edit"> Editar perfil </Link>
         </section>

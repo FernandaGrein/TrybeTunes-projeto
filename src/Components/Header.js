@@ -16,7 +16,8 @@ class Header extends React.Component {
     getUserName = async () => {
       this.setState({ load: true });
       const fetch = await getUser();
-      this.setState({ username: fetch.name.userName, load: false });
+      // console.log(fetch);
+      this.setState({ username: fetch.name, load: false });
     }
 
     render() {
@@ -24,7 +25,7 @@ class Header extends React.Component {
       return (
         <header data-testid="header-component">
           {load ? <Loading /> : (
-            <p data-testid="header-user-name">{`Olá, ${username}`}</p>
+            <p data-testid="header-user-name">{username}</p>
           )}
           <nav>
             <Link data-testid="link-to-search" to="/search"> Search </Link>

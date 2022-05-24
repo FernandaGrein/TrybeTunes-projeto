@@ -7,10 +7,10 @@ import { getUser, updateUser } from '../services/userAPI';
 class ProfileEdit extends React.Component {
  state = {
    loading: false,
-   userName: '',
-   userEmail: '',
-   userImage: '',
-   userDescription: '',
+   name: '',
+   email: '',
+   image: '',
+   description: '',
    disable: true,
    redirect: false,
  }
@@ -21,8 +21,13 @@ class ProfileEdit extends React.Component {
 
  fetchgetUser = async () => {
    this.setState({ loading: true });
-   await getUser();
-   this.setState({ loading: false });
+   const userData = await getUser();
+   this.setState({
+     name: userData.name,
+     email: userData.email,
+     description: userData.description,
+     image: userData.image,
+     loading: false }, () => this.enableButton());
  }
 
  handleChange = (event) => {
@@ -32,39 +37,34 @@ class ProfileEdit extends React.Component {
 
  enableButton = () => {
    const {
-     userName,
-     userEmail,
-     userImage,
-     userDescription } = this.state;
+     name,
+     email,
+     image,
+     description } = this.state;
 
-   if (userName.length > 0
-    && userEmail.length > 0
-    && userImage.length > 0
-    && userDescription.length > 0) {
+   if (name.length > 0
+    && email.length > 0
+    && image.length > 0
+    && description.length > 0) {
      this.setState({ disable: false });
    }
  }
 
  saveInformations = async () => {
-   const { userName,
-     userEmail,
-     userImage,
-     userDescription } = this.state;
+   const { name,
+     email,
+     image,
+     description } = this.state;
    this.setState({ loading: true });
-   await updateUser(
-     { userName },
-     { userEmail },
-     { userImage },
-     { userDescription },
-   );
+   await updateUser({ name, email, image, description });
    this.setState({ loading: false, redirect: true });
  }
 
  render() {
-   const { userName,
-     userEmail,
-     userImage,
-     userDescription,
+   const { name,
+     email,
+     image,
+     description,
      disable,
      loading,
      redirect } = this.state;
@@ -73,46 +73,46 @@ class ProfileEdit extends React.Component {
        <Header />
        {loading && <Loading />}
        <form>
-         <label htmlFor="userName">
+         <label htmlFor="name">
            Nome:
            <input
              type="text"
              data-testid="edit-input-name"
-             value={ userName }
-             name="userName"
+             value={ name }
+             name="name"
              onChange={ this.handleChange }
              required
            />
          </label>
-         <label htmlFor="userEmail">
+         <label htmlFor="email">
            Email:
            <input
              type="email"
              data-testid="edit-input-email"
-             value={ userEmail }
-             name="userEmail"
+             value={ email }
+             name="email"
              onChange={ this.handleChange }
              required
            />
          </label>
-         <label htmlFor="userDescription">
+         <label htmlFor="description">
            Descrição:
            <input
              type="text"
              data-testid="edit-input-description"
-             value={ userDescription }
-             name="userDescription"
+             value={ description }
+             name="description"
              onChange={ this.handleChange }
              required
            />
          </label>
-         <label htmlFor="userImage">
+         <label htmlFor="image">
            Imagem:
            <input
              type="text"
              data-testid="edit-input-image"
-             value={ userImage }
-             name="userImage"
+             value={ image }
+             name="image"
              onChange={ this.handleChange }
              required
            />
